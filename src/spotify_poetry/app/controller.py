@@ -38,9 +38,9 @@ class SpotifyPoet:
                 track_details = self._spotify_helper.search_track(track_name)
                 if track_details == None :
                     missing_words += len(track_name.split())
-                    tracks.append(Track(track_name, None)) # create empty track
+                    tracks.append(Track(track_name, None).jsonify()) # create empty track
                 else :
-                    tracks.append(track_details)
+                    tracks.append(track_details.jsonify())
 
             # prioritize the first elements in the list of possible arrangements to take advantage of pre-sort
             if best_arrangement == None or missing_words < best_missing_words :

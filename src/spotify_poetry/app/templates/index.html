@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <title>Spotify Poet</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+	    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type=text/javascript>
+		    $(function() {
+		      	$('#poemsubmit').bind('click', function() {
+					$('#mytracks > tbody').html("");
+					$("body").addClass("loading");
+		        	$.post('/search', {
+		         		 poetry: $('#mypoem').val()
+		        	}, function(data) {
+						var verseLength = data.result.length;
+						for (var i = 0; i < verseLength; i++) {
+							var trackListLength = data.result[i].length;
+							for (var j = 0; j < trackListLength; j++) {
+								var track = data.result[i][j];
+				          		var name_html = track.name;
+				          		if (track.id || track.id.length > 0) {
+				          			name_html = "<a href='http://open.spotify.com/track/" + track.id + "' target='_blank'>" + name_html + "</a>";
+				          		}
+				          		var new_row_html = 
+									"<tr>\n"
+									+ "\t<td>" + name_html + "</td>\n"
+									+ "\t<td>" + track.artists + "</td>\n"
+									+ "\t<td>" + track.album + "</td>\n"
+									+ "</tr>";
+								$('#mytracks > tbody:last').append(new_row_html);
+							}
+		          		}
+		          		$("body").removeClass("loading");
+		        	}, "json");
+		        	return false;
+		      	});
+		    });
+		</script>
+    </head>
+    <body>
+        <div id="container">
+        	<div id="left-container">
+		    	<div class="title">
+		        	<h1>Your Poetry</h1>
+		        </div>
+		        <div id="poetry">
+		            <label>Call your muse and type in your words of inspiration:</label>
+		            <textarea id="mypoem" cols="40" rows="5">{{poetry}}</textarea>
+		            <br/>
+		            <input id="poemsubmit" action="javascript:void();" type="submit" />
+		        </div>
+		    </div>
+	        <div id="right-container">
+		        <div class="title">
+		            <h1>Your Track List</h1>
+		        </div>
+		        <div id="track_list">
+		        	<table id="mytracks">
+		        		<thead>
+			            	<tr>
+			            		<th width="50%">Track</th>
+			            		<th>Artist</th>
+			            		<th>Album</th>
+			            	</tr>
+			            </thead>
+			            <tbody>
+					{% for verse_tracks in poetry_tracks %}
+						{% for track in verse_tracks %}
+							<tr>
+								{% if track.id %}
+								<td><a href="http://open.spotify.com/track/{{ track.id }}" target="_blank">{{ track.name }}</a></td>
+								{% else %}
+								<td>{{ track.name }}</td>
+								{% endif %}
+								<td>{{ track.artists }}</td>
+								<td>{{ track.album }}</td>
+							</tr>
+						{% endfor %}
+					{% endfor %}
+			            </tbody>
+					</table>
+		    	</div>
+	        </div>
+	    </div>
+		<div class="modal"><!-- Place at bottom of page --></div>
+    </body>
+</html>
+</html>

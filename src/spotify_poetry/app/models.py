@@ -70,3 +70,6 @@ class Track:
         else :
             message = "'" + self.name + "' by " + self.artists + " [" + self.album + "]"
         return message.encode('ascii','ignore') 
+    
+    def jsonify(self):
+        return {"name":self.name, "artists":self.artists, "album":self.album, "id":self.id}
