@@ -4,7 +4,7 @@ Created on Aug 5, 2014
 @author: ramsysafadi
 '''
 from spotify_poetry.app.models import Track
-from spotify_poetry.app.helpers import SpotifyHelper
+from spotify_poetry.app.utils.spotify_helper import SpotifyHelper
 
 class SpotifyPoet:
     _spotify_helper = SpotifyHelper()  
