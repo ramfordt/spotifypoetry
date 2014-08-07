@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Spotify Poet</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div id="container">
+            <div class="title">
+                <h1>Spotify Poet</h1>
+            </div>
+            <div id="poetry">
+                <form method="post" action="{{ url_for('find_tracks') }}">
+                  <label for="yourname">Call your muse and type in your words of inspiration:</label>
+                  <textarea name="poetry" cols="40" rows="5"></textarea>
+                  <br />
+                  <input type="submit" />
+                </form>
+            </div>
+            
+        </div>
+    </body>
+</html>
