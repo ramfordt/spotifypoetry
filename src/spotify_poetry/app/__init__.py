@@ -29,24 +29,6 @@ def find_tracks():
         poetry = Poem(poetry_string)
         poetry_tracks = poet.sing_poem(poetry);
         result = json.dumps({'result':poetry_tracks})
-        # result = jsonify(result=poetry_tracks)
     except Exception as e:
         print "Error occurred with poem: " + poetry_string + " - " + e
     return result
-
-'''
-# Define a route for the action of the form, for example '/hello/'
-# We are also defining which type of requests this route is 
-# accepting: POST requests in this case
-@app.route('/', methods=['POST'])
-def find_tracks():
-    poetry_string = request.form['poetry']
-    poetry_tracks = None
-    try :
-        poetry = Poem(poetry_string)
-        poetry_tracks = poet.sing_poem(poetry);
-    except Exception as e:
-        print "Error occurred with poem: " + poetry_string + " - " + e
-    
-    return render_template('form_action.html', poetry=poetry_string, poetry_tracks=poetry_tracks)
-'''

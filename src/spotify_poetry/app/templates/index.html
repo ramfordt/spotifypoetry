@@ -8,32 +8,53 @@
 		      	$('#poemsubmit').bind('click', function() {
 					$('#mytracks > tbody').html("");
 					$("body").addClass("loading");
-		        	$.post('/search', {
-		         		 poetry: $('#mypoem').val()
-		        	}, function(data) {
-						var verseLength = data.result.length;
-						for (var i = 0; i < verseLength; i++) {
-							var trackListLength = data.result[i].length;
-							for (var j = 0; j < trackListLength; j++) {
-								var track = data.result[i][j];
-				          		var name_html = track.name;
-				          		if (track.id || track.id.length > 0) {
-				          			name_html = "<a href='http://open.spotify.com/track/" + track.id + "' target='_blank'>" + name_html + "</a>";
-				          		}
-				          		var new_row_html = 
-									"<tr>\n"
-									+ "\t<td>" + name_html + "</td>\n"
-									+ "\t<td>" + track.artists + "</td>\n"
-									+ "\t<td>" + track.album + "</td>\n"
-									+ "</tr>";
-								$('#mytracks > tbody:last').append(new_row_html);
-							}
-		          		}
-		          		$("body").removeClass("loading");
-		        	}, "json");
+					poll();
 		        	return false;
 		      	});
 		    });
+					function poll(){
+			        	$.ajax({
+			        		url: '/search', 
+			        		data: {poetry: $('#mypoem').val()},
+						    tryCount : 0,
+						    retryLimit : 3,
+			        		success: function(data) {
+			        			var data_json = $.parseJSON(data);
+			        			var result = data_json.result
+								var verseLength = result.length;
+								for (var i = 0; i < verseLength; i++) {
+									var trackListLength = result[i].length;
+									for (var j = 0; j < trackListLength; j++) {
+										var track = result[i][j];
+						          		var name_html = track.name;
+						          		if (track.id || track.id.length > 0) {
+						          			name_html = "<a href='http://open.spotify.com/track/" + track.id + "' target='_blank'>" + name_html + "</a>";
+						          		}
+						          		var new_row_html = 
+											"<tr>\n"
+											+ "\t<td>" + name_html + "</td>\n"
+											+ "\t<td>" + track.artists + "</td>\n"
+											+ "\t<td>" + track.album + "</td>\n"
+											+ "</tr>";
+										$('#mytracks > tbody:last').append(new_row_html);
+									}
+				          		}
+				          		$("body").removeClass("loading");
+				        	},
+				        	error: function(x, textStatus, m) {
+				        		//  hack to retry if heroku times out on ajax request
+				        		//	TODO: implement long polling solution
+   					        	if (textStatus=="timeout") {
+                 					poll();
+            					} else {
+					          		$("body").removeClass("loading");
+					          	}
+        					},
+				        	type: "POST",
+				        	datatype: "json",
+				        	timeout: 25000
+				        });
+				    }
 		</script>
     </head>
     <body>
